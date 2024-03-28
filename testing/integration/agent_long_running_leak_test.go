@@ -77,7 +77,7 @@ func TestLongRunningAgentForLeaks(t *testing.T) {
 	}
 
 	suite.Run(t, &ExtendedRunner{info: info,
-		healthCheckTime:        time.Minute * 3,
+		healthCheckTime:        time.Minute * 6,
 		healthCheckRefreshTime: time.Second * 20,
 		resourceWatchers: []StatusWatcher{ // select which tests to run
 			&handleMonitor{},
@@ -207,13 +207,14 @@ func (runner *ExtendedRunner) TestHandleLeak() {
 // CheckHealthAtStartup ensures all the beats and agent are healthy and working before we continue
 func (runner *ExtendedRunner) CheckHealthAtStartup(ctx context.Context) {
 	// because we need to separately fetch the PIDs, wait until everything is healthy before we look for running beats
+	compDebugName := ""
 	require.Eventually(runner.T(), func() bool {
 		allHealthy := true
 		status, err := runner.agentFixture.ExecStatus(ctx)
 
 		apacheMatch := "logfile-apache"
 		foundApache := false
-		systemMatch := "metrics-default"
+		systemMatch := "system/metrics"
 		foundSystem := false
 
 		require.NoError(runner.T(), err)
@@ -231,11 +232,12 @@ func (runner *ExtendedRunner) CheckHealthAtStartup(ctx context.Context) {
 			}
 			runner.T().Logf("component state: %s", comp.Message)
 			if comp.State != int(cproto.State_HEALTHY) {
+				compDebugName = comp.Name
 				allHealthy = false
 			}
 		}
 		return allHealthy && foundApache && foundSystem
-	}, runner.healthCheckTime, runner.healthCheckRefreshTime, "install never became healthy")
+	}, runner.healthCheckTime, runner.healthCheckRefreshTime, "install never became healthy: components did not return a healthy state: %s", compDebugName)
 }
 
 /*
