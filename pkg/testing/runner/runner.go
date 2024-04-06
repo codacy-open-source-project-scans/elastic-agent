@@ -333,7 +333,7 @@ func (r *Runner) runInstance(ctx context.Context, sshAuth ssh.AuthMethod, logger
 	}
 
 	logger.Logf("Starting SSH; connect with `ssh -i %s %s@%s`", sshPrivateKeyPath, instance.Username, instance.IP)
-	client := NewSSHClient(instance.IP, instance.Username, sshAuth)
+	client := NewSSHClient(instance.IP, instance.Username, sshAuth, logger)
 	connectCtx, connectCancel := context.WithTimeout(ctx, 10*time.Minute)
 	defer connectCancel()
 	err = client.Connect(connectCtx)
@@ -466,7 +466,7 @@ func (r *Runner) getBuilds(b OSBatch) []Build {
 		var serverlessPackages []string
 		for _, p := range packages {
 			if slices.Contains([]string{"targz", "zip"}, p) {
-				packages = append(packages, p)
+				serverlessPackages = append(serverlessPackages, p)
 			}
 		}
 		packages = serverlessPackages
