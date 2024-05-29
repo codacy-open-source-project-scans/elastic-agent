@@ -10,7 +10,8 @@ steps:
     concurrency_group: elastic-agent-extended-testing/serverless-integration
     concurrency: 8
     env:
-      BEAT_NAME: "elastic-agent"
+      # we run each step in a different data center to spread the load
+      TEST_INTEG_AUTH_GCP_DATACENTER: "us-central1-a"
     command: ".buildkite/scripts/steps/integration_tests.sh serverless integration:single TestLogIngestionFleetManaged" #right now, run a single test in serverless mode as a sort of smoke test, instead of re-running the entire suite
     artifact_paths:
       - "build/TEST-**"
@@ -20,14 +21,14 @@ steps:
       machineType: "n1-standard-8"
     notify:
       - github_commit_status:
-          context: "Serverless integration test"
+          context: "buildkite/elastic-agent-extended-testing - Serverless integration test"
 
   - label: "Extended runtime leak tests"
     key: "extended-integration-tests"
     concurrency_group: elastic-agent-extended-testing/leak-tests
     concurrency: 8
     env:
-      BEAT_NAME: "elastic-agent"
+      TEST_INTEG_AUTH_GCP_DATACENTER: "us-central1-b"
     command: ".buildkite/scripts/steps/integration_tests.sh stateful integration:TestForResourceLeaks"
     artifact_paths:
       - "build/TEST-**"
@@ -37,14 +38,14 @@ steps:
       machineType: "n1-standard-8"
     notify:
       - github_commit_status:
-          context: "Extended runtime leak tests"
+          context: "buildkite/elastic-agent-extended-testing - Extended runtime leak tests"
 
   - label: "Integration tests"
     key: "integration-tests"
     concurrency_group: elastic-agent-extended-testing/integration
     concurrency: 8
     env:
-      BEAT_NAME: "elastic-agent"
+      TEST_INTEG_AUTH_GCP_DATACENTER: "us-central1-f"
     command: ".buildkite/scripts/steps/integration_tests.sh stateful"
     artifact_paths:
       - "build/TEST-**"
@@ -54,12 +55,14 @@ steps:
       machineType: "n1-standard-8"
     notify:
       - github_commit_status:
-          context: "Integration tests"
+          context: "buildkite/elastic-agent-extended-testing - Integration tests"
 
   - label: "Serverless Beats Tests"
     key: "serverless-beats-integration-tests"
     concurrency_group: elastic-agent-extended-testing/beats-integration
     concurrency: 8
+    env:
+      TEST_INTEG_AUTH_GCP_DATACENTER: "us-central1-a"
     command: ".buildkite/scripts/steps/beats_tests.sh"
     # if: "build.env('CRON') == 'yes'"
     agents:
@@ -70,4 +73,4 @@ steps:
         allowed: true
     notify:
       - github_commit_status:
-          context: "Serverless Beats Tests"
+          context: "buildkite/elastic-agent-extended-testing - Serverless Beats Tests"
