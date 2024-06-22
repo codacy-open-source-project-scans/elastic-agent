@@ -665,16 +665,6 @@ func (f *Fixture) PrepareAgentCommand(ctx context.Context, args []string, opts .
 		return nil, fmt.Errorf("failed to prepare before exec: %w", err)
 	}
 
-	// prepare a client if it's not already set
-	if f.c == nil {
-		cAddr, err := control.AddressFromPath(f.operatingSystem, f.workDir)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get control protcol address: %w", err)
-		}
-		agentClient := client.New(client.WithAddress(cAddr))
-		f.setClient(agentClient)
-	}
-
 	// #nosec G204 -- Not so many ways to support variadic arguments to the elastic-agent command :(
 	cmd := exec.CommandContext(ctx, f.binaryPath(), args...)
 	for _, o := range opts {
@@ -841,10 +831,15 @@ func (f *Fixture) EnsurePrepared(ctx context.Context) error {
 func (f *Fixture) binaryPath() string {
 	workDir := f.workDir
 	if f.installed {
+		installDir := "Agent"
+		if f.installOpts != nil && f.installOpts.Namespace != "" {
+			installDir = paths.InstallDirNameForNamespace(f.installOpts.Namespace)
+		}
+
 		if f.installOpts != nil && f.installOpts.BasePath != "" {
-			workDir = filepath.Join(f.installOpts.BasePath, "Elastic", "Agent")
+			workDir = filepath.Join(f.installOpts.BasePath, "Elastic", installDir)
 		} else {
-			workDir = filepath.Join(paths.DefaultBasePath, "Elastic", "Agent")
+			workDir = filepath.Join(paths.DefaultBasePath, "Elastic", installDir)
 		}
 	}
 	if f.packageFormat == "deb" || f.packageFormat == "rpm" {

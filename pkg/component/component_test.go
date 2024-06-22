@@ -610,8 +610,8 @@ func TestToComponents(t *testing.T) {
 					ID:         "filestream-default",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -839,8 +839,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -948,8 +948,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1059,8 +1059,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1219,8 +1219,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1256,8 +1256,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1293,8 +1293,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1316,7 +1316,6 @@ func TestToComponents(t *testing.T) {
 						},
 						{
 							ID:       "log-default-logfile-1",
-							Type:     client.UnitTypeInput,
 							LogLevel: defaultUnitLogLevel,
 							Config: MustExpectedConfig(map[string]interface{}{
 								"type": "log",
@@ -1330,8 +1329,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1358,8 +1357,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "logstash",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1386,8 +1385,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "redis",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -1828,8 +1827,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -2087,8 +2086,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -2130,8 +2129,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -2168,8 +2167,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -2280,8 +2279,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -2309,8 +2308,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "logstash",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -2380,8 +2379,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "redis",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -3078,8 +3077,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "log",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -3136,8 +3135,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -3249,8 +3248,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "elasticsearch",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -3364,8 +3363,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "kafka",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -3468,8 +3467,8 @@ func TestToComponents(t *testing.T) {
 					OutputType: "logstash",
 					InputSpec: &InputRuntimeSpec{
 						InputType:  "filestream",
-						BinaryName: "filebeat",
-						BinaryPath: filepath.Join("..", "..", "specs", "filebeat"),
+						BinaryName: "testbeat",
+						BinaryPath: filepath.Join("..", "..", "specs", "testbeat"),
 					},
 					Units: []Unit{
 						{
@@ -3555,7 +3554,7 @@ func TestToComponents(t *testing.T) {
 			runtime, err := LoadRuntimeSpecs(filepath.Join("..", "..", "specs"), scenario.Platform, SkipBinaryCheck())
 			require.NoError(t, err)
 
-			result, err := runtime.ToComponents(scenario.Policy, nil, scenario.LogLevel, scenario.headers)
+			result, err := runtime.ToComponents(scenario.Policy, nil, scenario.LogLevel, scenario.headers, map[string]uint64{})
 			if scenario.Err != "" {
 				assert.Equal(t, scenario.Err, err.Error())
 			} else {
@@ -4066,7 +4065,7 @@ func TestFlattenedDataStream(t *testing.T) {
 		t.Fatalf("cannot load runtime specs: %s", err)
 	}
 
-	result, err := runtime.ToComponents(policy, nil, logp.DebugLevel, nil)
+	result, err := runtime.ToComponents(policy, nil, logp.DebugLevel, nil, map[string]uint64{})
 	if err != nil {
 		t.Fatalf("cannot convert policy to component: %s", err)
 	}
@@ -4167,7 +4166,7 @@ func TestFlattenedDataStreamIsolatedUnits(t *testing.T) {
 		t.Fatalf("cannot load runtime specs: %s", err)
 	}
 
-	result, err := runtime.ToComponents(policy, nil, logp.DebugLevel, nil)
+	result, err := runtime.ToComponents(policy, nil, logp.DebugLevel, nil, map[string]uint64{})
 	if err != nil {
 		t.Fatalf("cannot convert policy to component: %s", err)
 	}
