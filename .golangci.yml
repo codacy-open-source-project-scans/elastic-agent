@@ -99,6 +99,11 @@ linters-settings:
               - errors
               - fmt
             reason: "This package is deprecated, use `fmt.Errorf` with `%w` instead"
+        - github.com/google/uuid:
+            # Recommended modules that should be used instead. (Optional)
+            recommendations:
+              - github.com/gofrs/uuid/v5
+            reason: "Use one uuid library consistently across the codebase"
 
   gomoddirectives:
     # Forbid local `replace` directives
@@ -112,6 +117,7 @@ linters-settings:
       - github.com/dop251/goja
       - github.com/dop251/goja_nodejs
       - github.com/fsnotify/fsnotify
+      - github.com/openshift/api
       - github.com/tonistiigi/fifo
 
   gosimple:
