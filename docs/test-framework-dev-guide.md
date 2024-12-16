@@ -25,8 +25,7 @@ The Elastic Agent package that is used for integration tests packages Beats buil
 
 ### Configuration
 
-ESS (staging) API Key to create on https://staging.found.no/account/keys
-
+ESS (production) API Key to create on <https://cloud.elastic.co/account/keys>
 Warning: if you never created a deployment on it, you won't have permission to get this key, so you will need to create one first.
 
 ## Running tests
@@ -317,6 +316,39 @@ Grouping tests is another way of spreading out the testing load across multiple 
 are defined the more instances will be provisioned to complete all tests. A balance between a small good set of
 groups is better than a ton of groups each executing a small set of tests, as the time to set up an instance can
 out weight the benefits of creating another group.
+
+#### Creating a new test group and Buildkite integration tests
+  
+  When creating a new test group, it is important to add the new group to the job in the `.buildkite/bk.integration.pipeline.yml` file. This will ensure that the new group is executed in the CI pipeline. 
+
+  Add the new group to the `matrix` in the corresponding steps. The matrix is a list of all test groups that are executed in the step. 
+  Example: 
+
+  ```yaml
+  - label: "x86_64:sudo: {{matrix}}"
+        command: |
+          ...
+        artifact_paths:
+          - build/**
+        agents:
+          provider: "gcp"
+          machineType: "n1-standard-8"
+          image: "family/platform-ingest-elastic-agent-ubuntu-2404"
+        plugins:
+          - test-collector#v1.10.1:
+              files: "build/TEST-*.xml"
+              format: "junit"
+              branches: "main"
+              debug: true
+        matrix:
+          - default
+          - container
+          - fleet-upgrade-to-pr-build
+          - upgrade
+          - fleet
+  ```
+
+  This requirement is temporary and will be removed once the Buildkite pipeline is updated to automatically detect new test groups.
 
 ### Test namespaces
 

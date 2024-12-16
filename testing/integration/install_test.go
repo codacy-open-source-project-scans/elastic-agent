@@ -20,11 +20,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/schollz/progressbar/v3"
 	"github.com/stretchr/testify/require"
 
 	"github.com/elastic/elastic-agent/internal/pkg/agent/application/paths"
+	"github.com/elastic/elastic-agent/internal/pkg/agent/install"
 	atesting "github.com/elastic/elastic-agent/pkg/testing"
 	"github.com/elastic/elastic-agent/pkg/testing/define"
+	"github.com/elastic/elastic-agent/pkg/testing/tools/check"
 	"github.com/elastic/elastic-agent/pkg/testing/tools/fleettools"
 	"github.com/elastic/elastic-agent/pkg/testing/tools/testcontext"
 	"github.com/elastic/elastic-agent/testing/installtest"
@@ -54,35 +57,41 @@ func TestInstallWithoutBasePath(t *testing.T) {
 	err = fixture.Prepare(ctx)
 	require.NoError(t, err)
 
-	// Run `elastic-agent install`.  We use `--force` to prevent interactive
-	// execution.
-	opts := atesting.InstallOpts{Force: true, Privileged: false}
-	out, err := fixture.Install(ctx, &opts)
-	if err != nil {
-		t.Logf("install output: %s", out)
-		require.NoError(t, err)
-	}
+	testInstallWithoutBasePathWithCustomUser(ctx, t, fixture, "", "")
+}
 
-	// Check that Agent was installed in default base path
-	topPath := installtest.DefaultTopPath()
-	require.NoError(t, installtest.CheckSuccess(ctx, fixture, topPath, &installtest.CheckOpts{Privileged: opts.Privileged}))
+func TestInstallWithoutBasePathWithCustomUser(t *testing.T) {
+	define.Require(t, define.Requirements{
+		Group: Default,
+		// We require sudo for this test to run
+		// `elastic-agent install` (even though it will
+		// be installed as non-root).
+		Sudo: true,
 
-	t.Run("check agent package version", testAgentPackageVersion(ctx, fixture, true))
-	t.Run("check second agent installs with --develop", testSecondAgentCanInstall(ctx, fixture, "", true, opts))
+		// It's not safe to run this test locally as it
+		// installs Elastic Agent.
+		Local: false,
+		OS: []define.OS{
+			{
+				Type: define.Darwin,
+			}, {
+				Type: define.Linux,
+			},
+		},
+	})
 
-	// Make sure uninstall from within the topPath fails on Windows
-	if runtime.GOOS == "windows" {
-		cwd, err := os.Getwd()
-		require.NoErrorf(t, err, "GetWd failed: %s", err)
-		err = os.Chdir(topPath)
-		require.NoErrorf(t, err, "Chdir to topPath failed: %s", err)
-		t.Cleanup(func() {
-			_ = os.Chdir(cwd)
-		})
-		out, err = fixture.Uninstall(ctx, &atesting.UninstallOpts{Force: true})
-		require.Error(t, err, "uninstall should have failed")
-		require.Containsf(t, string(out), "uninstall must be run from outside the installed path", "expected error string not found in: %s err: %s", out, err)
-	}
+	// Get path to Elastic Agent executable
+	fixture, err := define.NewFixtureFromLocalBuild(t, define.Version())
+	require.NoError(t, err)
+
+	ctx, cancel := testcontext.WithDeadline(t, context.Background(), time.Now().Add(10*time.Minute))
+	defer cancel()
+
+	// Prepare the Elastic Agent so the binary is extracted and ready to use.
+	err = fixture.Prepare(ctx)
+	require.NoError(t, err)
+
+	testInstallWithoutBasePathWithCustomUser(ctx, t, fixture, "tester", "testing")
 }
 
 func TestInstallWithBasePath(t *testing.T) {
@@ -250,6 +259,50 @@ func TestInstallPrivilegedWithBasePath(t *testing.T) {
 	t.Run("check second agent installs with --develop", testSecondAgentCanInstall(ctx, fixture, randomBasePath, true, opts))
 }
 
+func testInstallWithoutBasePathWithCustomUser(ctx context.Context, t *testing.T, fixture *atesting.Fixture, customUsername, customGroup string) {
+	// Run `elastic-agent install`.  We use `--force` to prevent interactive
+	// execution.
+	// create testing user
+	if customUsername != "" {
+		pt := progressbar.NewOptions(-1)
+		_, err := install.EnsureUserAndGroup(customUsername, customGroup, pt, true)
+		require.NoError(t, err)
+	}
+
+	opts := atesting.InstallOpts{Force: true, Privileged: false, Username: customUsername, Group: customGroup}
+	out, err := fixture.Install(ctx, &opts)
+	if err != nil {
+		t.Logf("install output: %s", out)
+		require.NoError(t, err)
+	}
+
+	// Check that Agent was installed in default base path
+	topPath := installtest.DefaultTopPath()
+	checks := &installtest.CheckOpts{
+		Privileged: opts.Privileged,
+		Username:   customUsername,
+		Group:      customGroup,
+	}
+	require.NoError(t, installtest.CheckSuccess(ctx, fixture, topPath, checks))
+
+	t.Run("check agent package version", testAgentPackageVersion(ctx, fixture, true))
+	t.Run("check second agent installs with --develop", testSecondAgentCanInstall(ctx, fixture, "", true, opts))
+
+	// Make sure uninstall from within the topPath fails on Windows
+	if runtime.GOOS == "windows" {
+		cwd, err := os.Getwd()
+		require.NoErrorf(t, err, "GetWd failed: %s", err)
+		err = os.Chdir(topPath)
+		require.NoErrorf(t, err, "Chdir to topPath failed: %s", err)
+		t.Cleanup(func() {
+			_ = os.Chdir(cwd)
+		})
+		out, err = fixture.Uninstall(ctx, &atesting.UninstallOpts{Force: true})
+		require.Error(t, err, "uninstall should have failed")
+		require.Containsf(t, string(out), "uninstall must be run from outside the installed path", "expected error string not found in: %s err: %s", out, err)
+	}
+}
+
 // Tests that a second agent can be installed in an isolated namespace, using either --develop or --namespace.
 func testSecondAgentCanInstall(ctx context.Context, fixture *atesting.Fixture, basePath string, develop bool, installOpts atesting.InstallOpts) func(*testing.T) {
 	return func(t *testing.T) {
@@ -282,6 +335,8 @@ func testSecondAgentCanInstall(ctx context.Context, fixture *atesting.Fixture, b
 		require.NoError(t, installtest.CheckSuccess(ctx, fixture, topPath, &installtest.CheckOpts{
 			Privileged: installOpts.Privileged,
 			Namespace:  installOpts.Namespace,
+			Username:   installOpts.Username,
+			Group:      installOpts.Group,
 		}))
 	}
 }
@@ -293,6 +348,15 @@ func TestInstallUninstallAudit(t *testing.T) {
 		Stack: &define.Stack{}, // needs a fleet-server.
 		Sudo:  true,
 		Local: false,
+		// Skip Windows as it has been disabled because of https://github.com/elastic/elastic-agent/issues/5952
+		OS: []define.OS{
+			{
+				Type: define.Linux,
+			},
+			{
+				Type: define.Darwin,
+			},
+		},
 	})
 
 	ctx, cancel := testcontext.WithDeadline(t, context.Background(), time.Now().Add(10*time.Minute))
@@ -357,13 +421,14 @@ func TestInstallUninstallAudit(t *testing.T) {
 	require.Equal(t, "uninstall", res.Source.AuditUnenrolledReason)
 }
 
-// TestRepeatedInstallUninstall will install then uninstall the agent
-// repeatedly.  This test exists because of a number of race
-// conditions that have occurred in the uninstall process.  Current
-// testing shows each iteration takes around 16 seconds.
-func TestRepeatedInstallUninstall(t *testing.T) {
-	define.Require(t, define.Requirements{
-		Group: Default,
+// TestRepeatedInstallUninstallFleet will install then uninstall the agent
+// repeatedly with it enrolled into Fleet.  This test exists because of a number
+// of race conditions that have occurred in the uninstall process when enrolled
+// into Fleet. Current testing shows each iteration takes around 16 seconds.
+func TestRepeatedInstallUninstallFleet(t *testing.T) {
+	info := define.Require(t, define.Requirements{
+		Group: Fleet,
+		Stack: &define.Stack{}, // needs a fleet-server.
 		// We require sudo for this test to run
 		// `elastic-agent install` (even though it will
 		// be installed as non-root).
@@ -374,37 +439,63 @@ func TestRepeatedInstallUninstall(t *testing.T) {
 		Local: false,
 	})
 
+	prepareCtx, prepareCancel := testcontext.WithDeadline(t, context.Background(), time.Now().Add(5*time.Minute))
+	defer prepareCancel()
+
+	policyResp, enrollmentTokenResp := createPolicyAndEnrollmentToken(prepareCtx, t, info.KibanaClient, createBasicPolicy())
+	t.Logf("Created policy %+v", policyResp.AgentPolicy)
+
+	t.Log("Getting default Fleet Server URL...")
+	fleetServerURL, err := fleettools.DefaultURL(prepareCtx, info.KibanaClient)
+	require.NoError(t, err, "failed getting Fleet Server URL")
+
+	// Get path to Elastic Agent executable
+	fixture, err := define.NewFixtureFromLocalBuild(t, define.Version())
+	require.NoError(t, err)
+
+	// Prepare the Elastic Agent so the binary is extracted and ready to use.
+	err = fixture.Prepare(prepareCtx)
+	require.NoError(t, err)
+
 	maxRunTime := 2 * time.Minute
 	iterations := 100
 	for i := 0; i < iterations; i++ {
-		t.Run(fmt.Sprintf("%s-%d", t.Name(), i), func(t *testing.T) {
-
-			// Get path to Elastic Agent executable
-			fixture, err := define.NewFixtureFromLocalBuild(t, define.Version())
-			require.NoError(t, err)
-
+		successful := t.Run(fmt.Sprintf("%s-%d", t.Name(), i), func(t *testing.T) {
 			ctx, cancel := testcontext.WithDeadline(t, context.Background(), time.Now().Add(maxRunTime))
 			defer cancel()
 
-			// Prepare the Elastic Agent so the binary is extracted and ready to use.
-			err = fixture.Prepare(ctx)
-			require.NoError(t, err)
-
 			// Run `elastic-agent install`.  We use `--force` to prevent interactive
 			// execution.
-			opts := &atesting.InstallOpts{Force: true}
+			opts := &atesting.InstallOpts{
+				Force: true,
+				EnrollOpts: atesting.EnrollOpts{
+					URL:             fleetServerURL,
+					EnrollmentToken: enrollmentTokenResp.APIKey,
+				},
+			}
 			out, err := fixture.Install(ctx, opts)
 			if err != nil {
 				t.Logf("install output: %s", out)
-				require.NoError(t, err)
+				require.NoErrorf(t, err, "install failed: %s", err)
 			}
 
-			// Check that Agent was installed in default base path
+			// Check that Agent was installed in successfully
 			require.NoError(t, installtest.CheckSuccess(ctx, fixture, opts.BasePath, &installtest.CheckOpts{Privileged: opts.Privileged}))
-			t.Run("check agent package version", testAgentPackageVersion(ctx, fixture, true))
+
+			// Check connected to Fleet.
+			check.ConnectedToFleet(ctx, t, fixture, 5*time.Minute)
+
+			// Perform uninstall.
 			out, err = fixture.Uninstall(ctx, &atesting.UninstallOpts{Force: true})
-			require.NoErrorf(t, err, "uninstall failed: %s", err)
+			if err != nil {
+				t.Logf("uninstall output: %s", out)
+				require.NoErrorf(t, err, "uninstall failed: %s", err)
+			}
 		})
+		if !successful {
+			// quit now, another test run will continue to fail now
+			return
+		}
 	}
 }
 
