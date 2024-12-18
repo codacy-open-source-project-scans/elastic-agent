@@ -458,8 +458,8 @@ github.com/elastic/go-docappender/v2 v2.3.2 h1:FJhYgq2DpCaxGaZUquc75dauEzWTWOyWU
 github.com/elastic/go-docappender/v2 v2.3.2/go.mod h1:5URybRUfmexRMtM/lwvcIRLje3Gsrj15qiiLm41gDrc=
 github.com/elastic/go-elasticsearch/v7 v7.17.10 h1:TCQ8i4PmIJuBunvBS6bwT2ybzVFxxUhhltAs3Gyu1yo=
 github.com/elastic/go-elasticsearch/v7 v7.17.10/go.mod h1:OJ4wdbtDNk5g503kvlHLyErCgQwwzmDtaFC4XyOxXA4=
-github.com/elastic/go-elasticsearch/v8 v8.16.0 h1:f7bR+iBz8GTAVhwyFO3hm4ixsz2eMaEy0QroYnXV3jE=
-github.com/elastic/go-elasticsearch/v8 v8.16.0/go.mod h1:lGMlgKIbYoRvay3xWBeKahAiJOgmFDsjZC39nmO3H64=
+github.com/elastic/go-elasticsearch/v8 v8.17.0 h1:e9cWksE/Fr7urDRmGPGp47Nsp4/mvNOrU8As1l2HQQ0=
+github.com/elastic/go-elasticsearch/v8 v8.17.0/go.mod h1:lGMlgKIbYoRvay3xWBeKahAiJOgmFDsjZC39nmO3H64=
 github.com/elastic/go-grok v0.3.1 h1:WEhUxe2KrwycMnlvMimJXvzRa7DoByJB4PVUIE1ZD/U=
 github.com/elastic/go-grok v0.3.1/go.mod h1:n38ls8ZgOboZRgKcjMY8eFeZFMmcL9n2lP0iHhIDk64=
 github.com/elastic/go-licenser v0.4.2 h1:bPbGm8bUd8rxzSswFOqvQh1dAkKGkgAmrPxbUi+Y9+A=
@@ -1622,10 +1622,10 @@ go.opentelemetry.io/collector/pdata/pprofile v0.115.0 h1:NI89hy13vNDw7EOnQf7Jtit
 go.opentelemetry.io/collector/pdata/pprofile v0.115.0/go.mod h1:jGzdNfO0XTtfLjXCL/uCC1livg1LlfR+ix2WE/z3RpQ=
 go.opentelemetry.io/collector/pdata/testdata v0.115.0 h1:Rblz+AKXdo3fG626jS+KSd0OSA4uMXcTQfpwed6P8LI=
 go.opentelemetry.io/collector/pdata/testdata v0.115.0/go.mod h1:inNnRt6S2Nn260EfCBEcjesjlKOSsr0jPwkPqpBkt4s=
-go.opentelemetry.io/collector/pipeline v0.115.0 h1:bmACBqb0e8U9ag+vGGHUP7kCfAO7HHROdtzIEg8ulus=
-go.opentelemetry.io/collector/pipeline v0.115.0/go.mod h1:qE3DmoB05AW0C3lmPvdxZqd/H4po84NPzd5MrqgtL74=
-go.opentelemetry.io/collector/pipeline/pipelineprofiles v0.115.0 h1:3l9ruCAOrssTUDnyChKNzHWOdTtfThnYaoPZ1/+5sD0=
-go.opentelemetry.io/collector/pipeline/pipelineprofiles v0.115.0/go.mod h1:2Myg+law/5lcezo9PhhZ0wjCaLYdGK24s1jDWbSW9VY=
+go.opentelemetry.io/collector/pipeline v0.116.0 h1:o8eKEuWEszmRpfShy7ElBoQ3Jo6kCi9ucm3yRgdNb9s=
+go.opentelemetry.io/collector/pipeline v0.116.0/go.mod h1:qE3DmoB05AW0C3lmPvdxZqd/H4po84NPzd5MrqgtL74=
+go.opentelemetry.io/collector/pipeline/pipelineprofiles v0.116.0 h1:vRdnwIU40bYtxntVOmxg4Bhrh9QVKtx5wwlxK21rc1s=
+go.opentelemetry.io/collector/pipeline/pipelineprofiles v0.116.0/go.mod h1:KxDMUOfbVy8lzZ85CZEG3gCJEYMyWiBKdN+HWUwQWTM=
 go.opentelemetry.io/collector/processor v0.115.0 h1:+fveHGRe24PZPv/F5taahGuZ9HdNW44hgNWEJhIUdyc=
 go.opentelemetry.io/collector/processor v0.115.0/go.mod h1:/oLHBlLsm7tFb7zOIrA5C0j14yBtjXKAgxJJ2Bktyk4=
 go.opentelemetry.io/collector/processor/batchprocessor v0.115.0 h1:dgw1jcE/YVFTs41b3Y7SerU3BBSyMEE93AYV+BAxR8E=
